@@ -1,0 +1,133 @@
+:root{
+      --bg:#0b0c10;
+        --panel:#13141a;
+          --elev:#191b23;
+            --text:#eaeaea;
+              --muted:#b9b9c3;
+                --accent:#ff7a1a;   /* laranja abóbora */
+                  --accent-2:#b5540f;
+                    --ok:#30d158;
+                      --radius:16px;
+                        --shadow:0 10px 30px rgba(0,0,0,.35);
+                        }
+
+                        *{box-sizing:border-box}
+                        html,body{height:100%}
+                        body{
+                          margin:0; background:var(--bg); color:var(--text);
+                            font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+                              -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+                              }
+
+                              a{color:var(--text); text-decoration:none}
+                              .container{max-width:1100px; margin:0 auto; padding:24px 16px}
+
+                              /* Topbar */
+                              .topbar{
+                                display:flex; align-items:center; justify-content:space-between;
+                                  gap:12px; padding:12px 16px; background:var(--panel); border-bottom:1px solid #222;
+                                  }
+                                  .brand{display:flex; align-items:center; gap:10px; font-weight:700}
+                                  .brand .logo{font-size:22px}
+                                  .brand-name{letter-spacing:.4px}
+
+                                  .actions{display:flex; gap:10px; align-items:center}
+
+                                  /* Botões */
+                                  .btn{
+                                    border:1px solid var(--accent);
+                                      background:linear-gradient(180deg, var(--accent), var(--accent-2));
+                                        color:#fff; padding:8px 14px; border-radius:999px; cursor:pointer; font-weight:600;
+                                          box-shadow:var(--shadow); transition:transform .08s ease, filter .2s ease;
+                                          }
+                                          .btn:hover{filter:brightness(1.05)}
+                                          .btn:active{transform:translateY(1px)}
+                                          .btn.ghost{
+                                            background:transparent; color:var(--accent);
+                                              border-color:var(--accent); box-shadow:none;
+                                              }
+                                              .btn.primary{}
+
+                                              /* Hero */
+                                              .hero{
+                                                position:relative; padding:56px 16px 88px; text-align:center;
+                                                  background:
+                                                      radial-gradient(1200px 400px at 50% -50%, rgba(255,122,26,.25), transparent 60%),
+                                                          linear-gradient(180deg, var(--panel), transparent 40%),
+                                                              linear-gradient(180deg, transparent, var(--panel));
+                                                              }
+                                                              .hero h1{font-size:clamp(28px, 5vw, 48px); margin:10px 0 6px}
+                                                              .hero p{color:var(--muted); margin:0 0 18px}
+                                                              .hero-cta{display:flex; justify-content:center}
+
+                                                              /* Camada de abóboras (posicionamento) */
+                                                              #pumpkin-layer{
+                                                                pointer-events:none; position:absolute; inset:0; overflow:hidden;
+                                                                }
+
+                                                                /* Filtros */
+                                                                .filters{
+                                                                  display:flex; align-items:center; justify-content:space-between;
+                                                                    gap:12px; flex-wrap:wrap; margin-top:-40px; padding:16px; border-radius:var(--radius);
+                                                                      background:var(--panel); box-shadow:var(--shadow);
+                                                                      }
+                                                                      .chips{display:flex; gap:8px; flex-wrap:wrap}
+                                                                      .chip{
+                                                                        background:var(--elev); color:var(--text); border:1px solid #2a2a33;
+                                                                          padding:6px 12px; border-radius:999px; cursor:pointer; font-weight:600;
+                                                                          }
+                                                                          .chip.active{outline:2px solid var(--accent); border-color:transparent}
+
+                                                                          .search{position:relative; display:flex; align-items:center}
+                                                                          .search input{
+                                                                            background:var(--elev); border:1px solid #2a2a33; color:var(--text);
+                                                                              padding:10px 36px 10px 12px; border-radius:10px; width:260px; max-width:92vw;
+                                                                              }
+                                                                              .kbd{
+                                                                                position:absolute; right:8px; top:50%; transform:translateY(-50%);
+                                                                                  font-size:12px; color:var(--muted); border:1px solid #333; background:#1d1f27; padding:1px 6px; border-radius:6px;
+                                                                                  }
+
+                                                                                  /* Grid de cartões */
+                                                                                  .grid{
+                                                                                    display:grid; gap:16px; margin:18px 0 42px;
+                                                                                      grid-template-columns:repeat( auto-fit, minmax(240px, 1fr) );
+                                                                                      }
+                                                                                      .card{
+                                                                                        background:linear-gradient(180deg, var(--elev), var(--panel));
+                                                                                          border:1px solid #222; border-radius:var(--radius); padding:16px;
+                                                                                            box-shadow:var(--shadow); transition:transform .12s ease, border-color .2s ease, box-shadow .2s ease;
+                                                                                            }
+                                                                                            .card:hover{transform:translateY(-2px); border-color:#2c2c36}
+                                                                                            .card h3{margin:0 0 6px; font-size:18px}
+                                                                                            .card p{margin:0 0 12px; color:var(--muted)}
+                                                                                            .meta{display:flex; align-items:center; justify-content:space-between}
+                                                                                            .badge{
+                                                                                              border:1px solid #2a2a33; background:#1a1c23; padding:4px 8px; border-radius:999px; font-size:12px; color:#d8d8e2;
+                                                                                              }
+                                                                                              .price{font-weight:800; color:#ffd4b2}
+
+                                                                                              /* Footer */
+                                                                                              .site-footer{
+                                                                                                border-top:1px solid #222; background:var(--panel); text-align:center; padding:20px; color:var(--muted);
+                                                                                                }
+
+                                                                                                /* Abóboras animadas */
+                                                                                                .pumpkin{
+                                                                                                  position:absolute; top:-48px; font-size:clamp(20px, 3vw, 32px); filter:drop-shadow(0 6px 12px rgba(0,0,0,.6));
+                                                                                                    animation: fall linear var(--dur) forwards, sway ease-in-out var(--sway-dur) infinite;
+                                                                                                    }
+                                                                                                    @keyframes fall{
+                                                                                                      to{ transform:translateY(120vh) rotate(360deg); opacity:.95; }
+                                                                                                      }
+                                                                                                      @keyframes sway{
+                                                                                                        0%,100%{ margin-left:0 }
+                                                                                                          50%{ margin-left:40px }
+                                                                                                          }
+
+                                                                                                          /* Responsivo */
+                                                                                                          @media (max-width:640px){
+                                                                                                            .brand-name{display:none}
+                                                                                                              .filters{padding:12px}
+                                                                                                              }
+}
