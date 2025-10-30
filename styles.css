@@ -10,14 +10,33 @@
   --shadow:0 12px 36px rgba(0,0,0,.35);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+/* ===== Base + Footer colado ao fundo ===== */
+html, body { height:100%; margin:0; }
+
 body{
-  margin:0; background:var(--bg); color:var(--text);
+  display:flex;               /* empurra o footer para o fundo */
+  flex-direction:column;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
   font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
 
+*{ box-sizing:border-box }
+
+a{ color:var(--text); text-decoration:none }
+
+/* Conteúdo principal ocupa o espaço para empurrar o footer */
+.container{
+  flex:1 0 auto;
+  max-width:1100px;
+  margin:0 auto;
+  padding:20px 16px 40px;
+}
+
+/* ===== Header ===== */
 .header{
   padding:28px 16px 12px;
   background:
@@ -25,13 +44,13 @@ body{
     linear-gradient(180deg, var(--panel), transparent 60%);
   border-bottom:1px solid #222;
 }
-.brand{display:flex; align-items:center; gap:12px}
-.logo{font-size:28px}
-.title{margin:0; font-size:clamp(22px, 4vw, 36px); letter-spacing:.3px}
-.subtitle{margin:6px 0 0; color:var(--muted)}
 
-.container{max-width:1100px; margin:0 auto; padding:20px 16px 40px}
+.brand{ display:flex; align-items:center; gap:12px }
+.logo{ font-size:28px }
+.title{ margin:0; font-size:clamp(22px, 4vw, 36px); letter-spacing:.3px }
+.subtitle{ margin:6px 0 0; color:var(--muted) }
 
+/* ===== Secções / Ementa ===== */
 .section-title{
   margin:22px 0 10px;
   font-size:clamp(18px, 3vw, 22px);
@@ -40,61 +59,88 @@ body{
 }
 
 .grid{
-  display:grid; gap:16px; margin-bottom:10px;
+  display:grid;
+  gap:16px;
+  margin-bottom:10px;
   grid-template-columns:repeat( auto-fit, minmax(260px, 1fr) );
 }
 
 .card{
   background:linear-gradient(180deg, var(--elev), var(--panel));
-  border:1px solid #23242c; border-radius:var(--radius);
-  padding:16px; box-shadow:var(--shadow);
+  border:1px solid #23242c;
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  transition:transform .12s ease, border-color .2s ease, box-shadow .2s ease;
 }
-.card h3{margin:0 0 6px; font-size:18px}
-.card p{margin:0 0 12px; color:var(--muted)}
-.price{display:inline-block; font-weight:800; color:#ffd4b2}
 
-/* Footer */
+.card:hover{ transform:translateY(-2px); border-color:#2c2c36 }
+.card h3{ margin:0 0 6px; font-size:18px }
+.card p{ margin:0 0 12px; color:var(--muted) }
+.price{ display:inline-block; font-weight:800; color:#ffd4b2 }
+
+/* ===== Footer (fixo ao fundo) ===== */
 .footer{
-  border-top:1px solid #222; background:var(--panel);
-  text-align:center; padding:18px; color:var(--muted);
+  flex-shrink:0;
+  border-top:1px solid #222;
+  background:var(--panel);
+  text-align:center;
+  padding:18px;
+  color:var(--muted);
 }
 
-/* Camada de efeitos */
+/* ===== Camada de efeitos ===== */
 #fx-layer{
-  position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:10;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:10;
 }
 
-/* Elementos animados */
+/* Entidades animadas (abóboras, morcegos, etc.) */
 .fx-entity{
-  position:absolute; top:-64px; font-size:clamp(20px, 3vw, 36px);
+  position:absolute;
+  top:-64px;
+  font-size:clamp(20px, 3vw, 36px);
   filter:drop-shadow(0 6px 12px rgba(0,0,0,.55));
-  opacity:0; transform:translateY(-40px) scale(.9);
+  opacity:0;
+  transform:translateY(-40px) scale(.9);
   animation: fall linear var(--dur) forwards, sway ease-in-out var(--sway) infinite;
 }
+
 @keyframes fall{
   0% { opacity:.0; }
   5% { opacity:1; }
   100% { transform:translateY(120vh) rotate(360deg); opacity:.95; }
 }
+
 @keyframes sway{
   0%,100%{ margin-left:0 }
   50%{ margin-left:40px }
 }
 
-/* Flash suave no início de cada ciclo */
+/* Flash suave no início de cada ciclo de efeitos */
 .fx-flash{
-  position:fixed; inset:0;
+  position:fixed;
+  inset:0;
   background:radial-gradient(800px 260px at 50% -20%, rgba(255,122,26,.18), transparent 60%);
-  opacity:0; animation: flash .9s ease-out forwards;
+  opacity:0;
+  animation: flash .9s ease-out forwards;
 }
+
 @keyframes flash{
   0%{opacity:0}
   30%{opacity:1}
   100%{opacity:0}
 }
 
-/* Respeitar acessibilidade */
+/* ===== Acessibilidade / Responsivo ===== */
 @media (prefers-reduced-motion: reduce){
-  .fx-entity{animation:none}
-  .fx-flash{display:none}
+  .fx-entity{ animation:none }
+  .fx-flash{ display:none }
+}
+
+@media (max-width:640px){
+  .title{ font-size:clamp(20px, 5vw, 28px) }
 }
