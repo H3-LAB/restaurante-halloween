@@ -1,108 +1,82 @@
 (() => {
-      const yearEl = document.getElementById('year');
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
+  // Ano no rodapé
+  const y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
 
-          // Navegação suave
-            document.querySelectorAll('a[href^="#"]').forEach(a => {
-                a.addEventListener('click', (e) => {
-                      const id = a.getAttribute('href');
-                            if (!id || id === '#') return;
-                                  const target = document.querySelector(id);
-                                        if (!target) return;
-                                              e.preventDefault();
-                                                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                                        });
-                                                          });
+  // Efeitos automáticos, sem interação
+  const layer = document.getElementById('fx-layer');
+  if (!layer) return;
 
-                                                            /* =========================
-                                                                 Filtros + Pesquisa
-                                                                   ========================= */
-                                                                     const grid = document.getElementById('menuGrid');
-                                                                       const chips = document.querySelectorAll('.chip');
-                                                                         const searchInput = document.getElementById('searchInput');
+  const ENTITIES = ['🎃','🎃','🎃','🕷️','🕸️','🦇','👻']; // predominância de abóbora
+  const ACTIVE_WINDOW_MS = [5000, 9000];     // duração de cada “rajada” de efeitos
+  const IDLE_WINDOW_MS   = [20000, 45000];   // espera entre rajadas (página “normal”)
+  const SPAWN_EVERY_MS   = [250, 550];       // frequência de spawns durante a rajada
+  const MAX_ON_SCREEN    = 40;               // teto para não poluir
 
-                                                                           let currentFilter = 'all';
-                                                                             function applyFilters() {
-                                                                                 const q = (searchInput.value || '').trim().toLowerCase();
-                                                                                     const cards = grid.querySelectorAll('.card');
-                                                                                         cards.forEach(card => {
-                                                                                               const inCategory = currentFilter === 'all' || card.classList.contains(currentFilter);
-                                                                                                     const hay = (card.textContent + ' ' + (card.dataset.tags || '')).toLowerCase();
-                                                                                                           const matches = !q || hay.includes(q);
-                                                                                                                 card.style.display = (inCategory && matches) ? '' : 'none';
-                                                                                                                     });
-                                                                                                                       }
+  let burstTimer = null;
+  let spawnTimer = null;
 
-                                                                                                                         chips.forEach(chip => {
-                                                                                                                             chip.addEventListener('click', () => {
-                                                                                                                                   chips.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-selected','false'); });
-                                                                                                                                         chip.classList.add('active'); chip.setAttribute('aria-selected','true');
-                                                                                                                                               currentFilter = chip.dataset.filter || 'all';
-                                                                                                                                                     applyFilters();
-                                                                                                                                                         });
-                                                                                                                                                           });
+  function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function randf(min, max){ return Math.random()*(max-min)+min; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-                                                                                                                                                             searchInput.addEventListener('input', applyFilters);
-                                                                                                                                                               // Atalho "/"
-                                                                                                                                                                 document.addEventListener('keydown', (e) => {
-                                                                                                                                                                     if (e.key === '/' && document.activeElement !== searchInput) {
-                                                                                                                                                                           e.preventDefault();
-                                                                                                                                                                                 searchInput.focus();
-                                                                                                                                                                                     }
-                                                                                                                                                                                       });
+  function spawnOne(){
+    if (layer.children.length > MAX_ON_SCREEN) return;
 
-                                                                                                                                                                                         /* =========================
-                                                                                                                                                                                              Efeito Halloween (abóboras)
-                                                                                                                                                                                                ========================= */
-                                                                                                                                                                                                  const pumpkinLayer = document.getElementById('pumpkin-layer');
-                                                                                                                                                                                                    const toggleBtn = document.getElementById('toggleHalloween');
-                                                                                                                                                                                                      let halloweenOn = false;
-                                                                                                                                                                                                        let spawnTimer = null;
+    const el = document.createElement('div');
+    el.className = 'fx-entity';
+    el.textContent = pick(ENTITIES);
 
-                                                                                                                                                                                                          function spawnPumpkin() {
-                                                                                                                                                                                                              if (!pumpkinLayer) return;
-                                                                                                                                                                                                                  const el = document.createElement('div');
-                                                                                                                                                                                                                      el.className = 'pumpkin';
-                                                                                                                                                                                                                          el.textContent = Math.random() < 0.15 ? '👻' : '🎃'; // mistura algumas “assombrações”
-                                                                                                                                                                                                                              // posição e animações variáveis
-                                                                                                                                                                                                                                  el.style.left = Math.round(Math.random() * 100) + 'vw';
-                                                                                                                                                                                                                                      el.style.setProperty('--dur', (6 + Math.random() * 6) + 's');
-                                                                                                                                                                                                                                          el.style.setProperty('--sway-dur', (2.5 + Math.random() * 2.5) + 's');
-                                                                                                                                                                                                                                              pumpkinLayer.appendChild(el);
-                                                                                                                                                                                                                                                  // remover no fim
-                                                                                                                                                                                                                                                      const removeAfter = 12000;
-                                                                                                                                                                                                                                                          setTimeout(() => el.remove(), removeAfter);
-                                                                                                                                                                                                                                                            }
+    // posição/tempo variáveis
+    el.style.left = Math.round(Math.random()*100) + 'vw';
+    el.style.setProperty('--dur', (6 + Math.random()*7) + 's');
+    el.style.setProperty('--sway', (2.5 + Math.random()*2.5) + 's');
 
-                                                                                                                                                                                                                                                              function startHalloween() {
-                                                                                                                                                                                                                                                                  if (halloweenOn) return;
-                                                                                                                                                                                                                                                                      halloweenOn = true;
-                                                                                                                                                                                                                                                                          toggleBtn?.setAttribute('aria-pressed', 'true');
-                                                                                                                                                                                                                                                                              // rajada inicial
-                                                                                                                                                                                                                                                                                  for (let i = 0; i < 10; i++) spawnPumpkin();
-                                                                                                                                                                                                                                                                                      spawnTimer = setInterval(() => spawnPumpkin(), 600);
-                                                                                                                                                                                                                                                                                        }
+    layer.appendChild(el);
 
-                                                                                                                                                                                                                                                                                          function stopHalloween() {
-                                                                                                                                                                                                                                                                                              halloweenOn = false;
-                                                                                                                                                                                                                                                                                                  toggleBtn?.setAttribute('aria-pressed', 'false');
-                                                                                                                                                                                                                                                                                                      if (spawnTimer) clearInterval(spawnTimer);
-                                                                                                                                                                                                                                                                                                          spawnTimer = null;
-                                                                                                                                                                                                                                                                                                              // limpar elementos
-                                                                                                                                                                                                                                                                                                                  pumpkinLayer?.querySelectorAll('.pumpkin').forEach(p => p.remove());
-                                                                                                                                                                                                                                                                                                                    }
+    // limpeza defensiva
+    const ttl = 14000;
+    setTimeout(() => el.remove(), ttl);
+  }
 
-                                                                                                                                                                                                                                                                                                                      toggleBtn?.addEventListener('click', () => {
-                                                                                                                                                                                                                                                                                                                          halloweenOn ? stopHalloween() : startHalloween();
-                                                                                                                                                                                                                                                                                                                            });
+  function flash(){
+    const f = document.createElement('div');
+    f.className = 'fx-flash';
+    layer.appendChild(f);
+    setTimeout(() => f.remove(), 900);
+  }
 
-                                                                                                                                                                                                                                                                                                                              // Ativar automaticamente em Outubro
-                                                                                                                                                                                                                                                                                                                                const now = new Date();
-                                                                                                                                                                                                                                                                                                                                  if (now.getMonth() === 9) { // 0=Jan ... 9=Out
-                                                                                                                                                                                                                                                                                                                                      startHalloween();
-                                                                                                                                                                                                                                                                                                                                        }
+  function startBurst(){
+    // flash inicial discreto
+    flash();
 
-                                                                                                                                                                                                                                                                                                                                          // Primeira aplicação de filtros
-                                                                                                                                                                                                                                                                                                                                            applyFilters();
-                                                                                                                                                                                                                                                                                                                                            })();
-})
+    // ciclo de spawn
+    const spawn = () => spawnOne();
+    spawn(); // imediato
+    const step = () => {
+      spawn();
+      const next = rand(SPAWN_EVERY_MS[0], SPAWN_EVERY_MS[1]);
+      spawnTimer = setTimeout(step, next);
+    };
+    step();
+
+    // parar a rajada passado X ms
+    const activeMs = rand(ACTIVE_WINDOW_MS[0], ACTIVE_WINDOW_MS[1]);
+    burstTimer = setTimeout(stopBurst, activeMs);
+  }
+
+  function stopBurst(){
+    if (spawnTimer) { clearTimeout(spawnTimer); spawnTimer = null; }
+    // deixar as entidades terminar a animação; limpeza “soft”
+    setTimeout(() => {
+      [...layer.querySelectorAll('.fx-entity')].forEach(n => n.remove());
+    }, 3000);
+
+    // agenda próxima rajada
+    const idle = rand(IDLE_WINDOW_MS[0], IDLE_WINDOW_MS[1]);
+    setTimeout(startBurst, idle);
+  }
+
+  // Começa com um pequeno atraso para a página assentar
+  setTimeout(startBurst, rand(2000, 5000));
+})();
